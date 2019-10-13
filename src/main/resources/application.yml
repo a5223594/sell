@@ -1,0 +1,37 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+    url: jdbc:mysql://localhost:3306/sell?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Hongkong
+  jpa:
+    show-sql: true
+  redis:
+    host: 192.168.229.7
+    password: redis-pass
+  kafka:
+    bootstrap-servers: 192.168.229.7:9092,192.168.229.8:9092,192.168.229.9:9092
+    consumer:
+      group-id: test
+      enable-auto-commit: true
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+server:
+  servlet:
+    context-path: /sell
+#wechat:
+#  mpAppId: wx08c934b36ea388d7
+#  mpAppSecret: 1094447652f1a91ea68988a044dc618c
+#  #openAppId: wx6ad144e54af67d87
+#  #openAppSecret: 91a2ff6d38a2bbccfb7e9xxxxxx
+#  #mchId: 1483469312
+#  #mchKey: 06C56A89949D617xxxxxxxxxxx
+#  #keyPath: /var/weixin_cert/h5.p12
+#  #notifyUrl: http://sell.natapp4.cc/sell/pay/notify
+#  #templateId:
+#    #orderStatus: e-Cqq67QxD6YNI41iRiqawEYdFavW_7pc7LyEMb-yeQ
+#
+#project-url:
+#  wechatMpAuthorize: http://jie.natapp1.cc
+#  #wechatOpenAuthorize: http://jie.natapp1.cc
+#  sell: http://jie.natapp1.cc

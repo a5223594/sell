@@ -1,0 +1,22 @@
+package com.my.sell.controller.weixin;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@Controller
+@RequestMapping("/buyer/order")
+@Slf4j
+public class WechatPayController {
+
+    @GetMapping("pay")
+    public String pay(@RequestParam String orderId, @RequestParam String openid, @RequestParam String returnUrl) {
+        log.info("{}",orderId);
+        log.info("{}",openid);
+        log.info("{}",returnUrl);
+        return "redirect:" + returnUrl;
+    }
+}

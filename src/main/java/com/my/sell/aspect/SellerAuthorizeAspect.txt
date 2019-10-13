@@ -1,0 +1,51 @@
+package com.my.sell.aspect;
+
+import com.my.sell.constant.CookieConstant;
+import com.my.sell.constant.RedisConstant;
+import com.my.sell.exception.SellerAuthorizeException;
+import com.my.sell.utils.CookieUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+
+@Aspect
+@Component
+@Slf4j
+public class SellerAuthorizeAspect {
+
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    @Pointcut("execution(public * com.my.sell.controller.seller.Seller*.*(..))" +
+            "&& !execution(public * com.my.sell.controller.seller.SellerInfoController.*(..))")
+    public void verify() {}
+
+    @Before("verify()")
+    public void doVerify() {
+        ServletRequestAttributes attributes =(ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        assert attributes != null;
+        HttpServletRequest request = attributes.getRequest();
+        Cookie cookie = CookieUtil.get(request, CookieConstant.TOKEN);
+        if (cookie == null) {
+            log.warn("登录校验，cookie中没有token");
+            throw new SellerAuthorizeException();
+        }
+
+        String tokenValue = (String) redisTemplate.opsForValue().get(String.format(RedisConstant.TOKEN_PREFIX, cookie.getValue()));
+        if (StringUtils.isEmpty(tokenValue)) {
+            log.warn("登录校验，redis中不匹配cookie的token，请重新登录");
+            throw new SellerAuthorizeException();
+        }
+    }
+}
